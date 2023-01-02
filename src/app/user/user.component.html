@@ -1,0 +1,116 @@
+<table class="table">
+  <thead>
+    <tr>
+      <td>Sl</td>
+      <td>Username</td>
+      <td>Created At</td>
+      <td>Update At</td>
+      <td></td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let user of getusers(); index as sl">
+      <td>{{ sl + 1 }}</td>
+      <td>{{ user.username }}</td>
+      <td>{{ user.created_at }}</td>
+      <td>{{ user.expires_at }}</td>
+      <td>
+        <button
+          class="btn btn-info btn-sm"
+          (click)="editUser(user, userCreationModal)"
+        >
+          Edit
+        </button>
+      </td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="4" class="text-center">
+        <button
+          class="btn btn-lg btn-secondary"
+          (click)="open(userCreationModal)"
+        >
+          Add new user
+        </button>
+      </td>
+    </tr>
+  </tfoot>
+</table>
+<div class="d-flex justify-content-between p-2">
+  <ngb-pagination
+    [collectionSize]="getNumberOfUsers()"
+    [(page)]="page"
+    [pageSize]="pageSize"
+    (pageChange)="getusers()"
+  >
+  </ngb-pagination>
+
+  <select
+    class="form-select"
+    style="width: auto"
+    [(ngModel)]="pageSize"
+    (ngModelChange)="getusers()"
+  >
+    <option [ngValue]="10">10 items per page</option>
+    <option [ngValue]="50">50 items per page</option>
+    <option [ngValue]="100">100 items per page</option>
+  </select>
+</div>
+<ng-template #userCreationModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Create New User</h4>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    >
+      <span aria-hidden="true">×</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form
+      action=""
+      [formGroup]="userCreationForm"
+      (ngSubmit)="addAndUpdateUser()"
+    >
+      <div class="form-group">
+        <label for="">Username</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="username"
+          (change)="onChange()"
+        />
+      </div>
+      <div class="form-group">
+        <label for="">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          formControlName="password"
+        />
+      </div>
+      <div class="form-group" *ngIf="!isHiddenValidForDays">
+        <label for="">Valid For Days</label>
+        <input
+          type="number"
+          class="form-control"
+          formControlName="valid_for_days"
+          (change)="changeValidForDays()"
+        />
+      </div>
+      <div class="form-group" *ngIf="!isHiddenExpiresAtField">
+        <label for="">Expire At</label>
+        <input
+          type="date"
+          class="form-control"
+          formControlName="expires_at"
+          (change)="changeExpiresAt()"
+        />
+      </div>
+      <button class="btn btn-outline-secondary" type="submit">Create</button>
+    </form>
+  </div>
+</ng-template>
